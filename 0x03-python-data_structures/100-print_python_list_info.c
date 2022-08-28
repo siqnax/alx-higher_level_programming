@@ -1,74 +1,23 @@
+#include "/usr/include/python3.4/Python.h"
+#include "/usr/include/python3.4/listobject.h"
+#include "/usr/include/python3.4/object.h"
 #include <stdio.h>
-#include <stdlib.h>
-#include "lists.h"
 
-/**
- * print_listint - prints all elements of a listint_t list
- * @h: pointer to head of list
- * Return: number of nodes
- */
-size_t print_listint(const listint_t *h)
+void print_python_list_info(PyObject *p)
 {
-    const listint_t *current;
-    unsigned int n; /* number of nodes */
+    int i = 0, list_len = 0;
+    PyObject *item;
+    PyListObject *clone = (PyListObject *) p;
 
-    current = h;
-    n = 0;
-    while (current != NULL)
+    list_len = Py_SIZE(p);
+    printf("[*] Size of the Python List = %d\n", list_len);
+    printf("[*] Allocated = %d\n", (int) clone->allocated);
+
+    for (; i < list_len; ++i)
     {
-        printf("%i\n", current->n);
-        current = current->next;
-        n++;
+        item = PyList_GET_ITEM(p, i);
+        printf("Element %d: %s\n", i, item->ob_type->tp_name);
     }
 
-    return (n);
-}
-
-/**
- * add_nodeint_end - adds a new node at the end of a listint_t list
- * @head: pointer to pointer of first node of listint_t list
- * @n: integer to be included in new node
- * Return: address of the new element or NULL if it fails
- */
-listint_t *add_nodeint_end(listint_t **head, const int n)
-{
-    listint_t *new;
-    listint_t *current;
-
-    current = *head;
-
-    new = malloc(sizeof(listint_t));
-    if (new == NULL)
-        return (NULL);
-
-    new->n = n;
-    new->next = NULL;
-
-    if (*head == NULL)
-        *head = new;
-    else
-    {
-        while (current->next != NULL)
-            current = current->next;
-        current->next = new;
-    }
-
-    return (new);
-}
-
-/**
- * free_listint - frees a listint_t list
- * @head: pointer to list to be freed
- * Return: void
- */
-void free_listint(listint_t *head)
-{
-    listint_t *current;
-
-    while (head != NULL)
-    {
-        current = head;
-        head = head->next;
-        free(current);
-    }
+    return;
 }
